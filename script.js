@@ -1,7 +1,18 @@
 'use strict'
 
-let money = prompt("Ваш бюджет на месяц в рублях?", "");
-let date = prompt("Введите дату в формате YYYY-MM-DD", "");
+let money, date;
+
+function start() {
+    money = +prompt("Ваш бюджет на месяц в рублях?", "");
+    date = prompt("Введите дату в формате YYYY-MM-DD", "");
+
+    while (isNaN(money) || money == "" || money == null) {
+        money = +prompt("Ваш бюджет на месяц в рублях?", "");
+    }
+}
+
+start();
+
 
 let appData = {
     budget: money,
@@ -9,23 +20,27 @@ let appData = {
     expenses: {}, //обязательные расходы
     optionalExpenses: {}, //необязательные расходы
     income: [],
-    savings: false,
+    savings: true,
 };
 
-for (let i = 0; i < 2; i++) {
-    let a = prompt('Введите обязательную статью расходов в этом месяце', ''),
-        b = +prompt('Во сколько обойдётся?', '');
+chooseExpenses();
 
-    if (typeof (a) === 'string' && typeof (a) != null && typeof (b) != null && a != '' && b != '' && a.length < 50) {
-        console.log('done');
-        appData.expenses[a] = b;
-    } else {
-        console.log('Неверный формат данных');
-        i--;
-    }
-};
+function chooseExpenses() {
+    for (let i = 0; i < 2; i++) {
+        let a = prompt('Введите обязательную статью расходов в этом месяце', ''),
+            b = +prompt('Во сколько обойдётся?', '');
 
-appData.moneyPerDay = appData.budget / 30;
+        if (typeof (a) === 'string' && typeof (a) != null && typeof (b) != null && a != '' && b != '' && a.length < 50) {
+            console.log('done');
+            appData.expenses[a] = b;
+        } else {
+            console.log('Неверный формат данных');
+            i--;
+        }
+    };
+}
+
+appData.moneyPerDay = (appData.budget / 30).toFixed();
 
 alert("Ежедневный бюджет: " + appData.moneyPerDay);
 
@@ -39,3 +54,15 @@ if (appData.moneyPerDay <= 100) {
 else {
     console.log("Неверный тип данных");
 }
+
+function checkSavings() {
+    if (appData.savings) {
+        let save = +prompt("Ваша сумма накоплений?"),
+            percent = +prompt("Под какой процент?");
+
+        appData.monthIncome = save / 100 / 12 * percent;
+        alert("Доход в месяц с вашего депозита: " + appData.monthIncome);
+    }
+}
+
+checkSavings();
